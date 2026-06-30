@@ -92,7 +92,7 @@ export default function Home() {
           <ElectricBorder color="#fef3c7" speed={1.5} chaos={0.15} borderRadius={999} className="rounded-full">
             <Link
               to="/contact"
-              className="bg-white text-[#0F172A] hover:bg-yellow-400 hover:text-[#0F172A] font-black px-16 py-6 rounded-full uppercase tracking-widest text-xl w-full h-full block shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all duration-300 transform hover:scale-[1.02]"
+              className="bg-white text-[#0F172A] hover:bg-yellow-400 hover:text-[#0F172A] font-black px-6 md:px-16 py-4 md:py-6 rounded-full uppercase tracking-widest text-base md:text-xl w-full h-full block shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all duration-300 transform hover:scale-[1.02] text-center whitespace-normal"
             >
               Book Priority Service
             </Link>

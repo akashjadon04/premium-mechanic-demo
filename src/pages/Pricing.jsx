@@ -66,7 +66,7 @@ export default function Pricing() {
               100% Itemized Transparency
             </span>
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-8xl font-black text-clay-dark uppercase tracking-tight mb-8">
+          <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-clay-dark uppercase tracking-tight mb-8 break-words">
             Transparent <br />
             <span className="text-gradient-accent">Premium Pricing</span>
           </h1>

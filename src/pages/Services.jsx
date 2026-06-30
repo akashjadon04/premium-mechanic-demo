@@ -110,13 +110,13 @@ export default function Services() {
           blurAmount={2}
         >
           {servicesList.map((svc, i) => (
-            <ScrollStackItem key={i} itemClassName={`flex flex-col md:flex-row justify-between items-start md:items-center p-8 md:p-16 border-[3px] shadow-[20px_20px_40px_#d1d9e6,_-20px_-20px_40px_#ffffff] rounded-[3rem] ${svc.bg}`}>
-              <div className="max-w-2xl">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className={`w-16 h-16 rounded-full shadow-inner bg-white flex items-center justify-center font-black ${svc.color} text-2xl`}>
+            <ScrollStackItem key={i} itemClassName={`flex flex-col md:flex-row justify-between items-start md:items-center p-6 md:p-16 border-[3px] shadow-[20px_20px_40px_#d1d9e6,_-20px_-20px_40px_#ffffff] rounded-[3rem] ${svc.bg}`}>
+              <div className="max-w-2xl w-full">
+                <div className="flex items-center gap-3 md:gap-4 mb-6">
+                  <div className={`w-12 h-12 md:w-16 md:h-16 rounded-full shadow-inner flex-shrink-0 bg-white flex items-center justify-center font-black ${svc.color} text-xl md:text-2xl`}>
                     0{i + 1}
                   </div>
-                  <h2 className={`text-4xl md:text-5xl font-black ${svc.color}`}>{svc.title}</h2>
+                  <h2 className={`text-3xl md:text-5xl font-black ${svc.color} break-words whitespace-normal`}>{svc.title}</h2>
                 </div>
                 <p className="text-clay-dark/70 text-lg md:text-2xl font-inter leading-relaxed font-semibold">
                   {svc.desc}

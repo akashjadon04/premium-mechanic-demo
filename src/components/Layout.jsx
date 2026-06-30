@@ -20,14 +20,14 @@ export default function Layout() {
           </svg>
           <span className="font-black text-xl md:text-2xl tracking-widest text-white uppercase drop-shadow-md">YM<span className="text-blue-500">.</span></span>
         </Link>
-        <div className="flex items-center gap-6 z-[1000]">
+        <div className="flex items-center gap-2 md:gap-6 z-[1000]">
           <div className="transform scale-[0.6] origin-right relative top-1">
             <Bb8Toggle checked={theme} onChange={(e) => setTheme(e.target.checked)} />
           </div>
           <BubbleMenu className="!static !m-0 !p-0" style={{ position: 'relative', top: 'auto', right: 'auto' }} />
         </div>
       </header>
-      <main className="flex-grow">
+      <main className="flex-grow w-full overflow-hidden">
         <Outlet />
       </main>
       <Footer />
