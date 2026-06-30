@@ -132,7 +132,7 @@ export default function Contact() {
               Active Support Channels
             </span>
           </div>
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black text-white uppercase tracking-tight mb-8 leading-[0.95] drop-shadow-2xl">
+          <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-white uppercase tracking-tight mb-8 leading-[1] drop-shadow-2xl">
             Connect With <br />
             <span className="text-blue-500 drop-shadow-lg">The Workshop</span>
           </h1>

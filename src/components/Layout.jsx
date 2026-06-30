@@ -8,7 +8,7 @@ export default function Layout() {
   const [theme, setTheme] = useState(false);
 
   return (
-    <div className={`min-h-screen flex flex-col ${theme ? 'dark-theme' : ''}`}>
+    <div className={`min-h-screen flex flex-col w-full max-w-[100vw] overflow-x-hidden ${theme ? 'dark-theme' : ''}`}>
       <header className="absolute top-0 w-full z-50 p-4 md:p-6 flex justify-between items-center max-w-7xl mx-auto left-0 right-0">
         <Link to="/" className="flex items-center gap-2 md:gap-3 px-4 py-2 md:px-6 md:py-3 rounded-full hover:scale-105 transition-transform bg-black/30 backdrop-blur-md border border-white/20 shadow-lg">
           {/* SVG Hypercar Logo */}

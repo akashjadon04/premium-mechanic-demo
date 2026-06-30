@@ -49,8 +49,8 @@ export default function Pricing() {
     <div className="bg-clay-base text-clay-dark min-h-screen font-sans antialiased selection:bg-clay-accent selection:text-white relative overflow-hidden">
       
       {/* Background Blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-clay-accent/10 rounded-full mix-blend-multiply filter blur-[120px] pointer-events-none animate-blob" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-clay-orange/10 rounded-full mix-blend-multiply filter blur-[100px] pointer-events-none animate-blob animation-delay-2000" />
+      <div className="absolute top-[-10%] left-[-10%] w-[20rem] h-[20rem] md:w-[600px] md:h-[600px] bg-clay-accent/10 rounded-full mix-blend-multiply filter blur-[80px] md:blur-[120px] pointer-events-none animate-blob" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[18rem] h-[18rem] md:w-[500px] md:h-[500px] bg-clay-orange/10 rounded-full mix-blend-multiply filter blur-[80px] md:blur-[100px] pointer-events-none animate-blob animation-delay-2000" />
 
       {/* 1. Hero Section */}
       <section className="min-h-[60vh] flex flex-col items-center justify-center border-b border-clay-border text-center px-6 relative z-10">

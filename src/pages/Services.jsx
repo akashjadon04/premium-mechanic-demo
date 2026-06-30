@@ -91,7 +91,7 @@ export default function Services() {
           transition={{ duration: 0.8 }}
           className="max-w-4xl relative z-10"
         >
-          <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-8 text-white drop-shadow-xl">
+          <h1 className="text-5xl md:text-8xl font-black tracking-tight mb-8 text-white drop-shadow-xl">
             Our <span className="text-blue-500">Services</span>
           </h1>
           <p className="text-white/80 text-xl lg:text-3xl font-inter font-light">
