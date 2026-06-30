@@ -89,10 +89,10 @@ export default function About() {
           </motion.div>
 
           {/* Parallax Zooming Image */}
-          <div className="flex justify-center h-[500px] rounded-[3rem] overflow-hidden clay-panel p-2 shadow-2xl relative">
+          <div className="flex justify-center h-64 md:h-[500px] w-full rounded-[3rem] overflow-hidden clay-panel p-2 shadow-2xl relative">
             <motion.img 
               style={{ scale: imageScale, y: imageY }}
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Porsche_911_GT3_RS_interior.jpg/2560px-Porsche_911_GT3_RS_interior.jpg" 
+              src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&q=80&w=2500" 
               alt="Luxury Automobile Cockpit Setup" 
               className="w-full h-full object-cover rounded-[2.5rem]"
             />

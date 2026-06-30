@@ -39,9 +39,9 @@ export default function Home() {
     <div className="bg-clay-base text-clay-dark min-h-screen font-sans antialiased relative overflow-hidden">
       
       {/* Vibrant Background Blobs */}
-      <div className="absolute top-[10%] left-[-10%] w-[50rem] h-[50rem] bg-clay-green rounded-full filter blur-[120px] opacity-70 animate-blob pointer-events-none" />
-      <div className="absolute top-[30%] right-[-10%] w-[45rem] h-[45rem] bg-clay-yellow rounded-full filter blur-[120px] opacity-70 animate-blob animation-delay-2000 pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[20%] w-[40rem] h-[40rem] bg-clay-orangeBg rounded-full filter blur-[120px] opacity-70 animate-blob animation-delay-4000 pointer-events-none" />
+      <div className="absolute top-[10%] left-[-10%] w-[20rem] h-[20rem] md:w-[50rem] md:h-[50rem] bg-clay-green rounded-full filter blur-[80px] md:blur-[120px] opacity-70 animate-blob pointer-events-none" />
+      <div className="absolute top-[30%] right-[-10%] w-[18rem] h-[18rem] md:w-[45rem] md:h-[45rem] bg-clay-yellow rounded-full filter blur-[80px] md:blur-[120px] opacity-70 animate-blob animation-delay-2000 pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[20%] w-[15rem] h-[15rem] md:w-[40rem] md:h-[40rem] bg-clay-orangeBg rounded-full filter blur-[80px] md:blur-[120px] opacity-70 animate-blob animation-delay-4000 pointer-events-none" />
 
       {/* 1. Massive Image Hero Section */}
       <section id="hero" className="min-h-screen flex items-center justify-center relative z-10 px-6 overflow-hidden">
@@ -70,11 +70,11 @@ export default function Home() {
             </span>
           </div>
 
-          <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-[8rem] font-black tracking-tight mb-8 leading-[1.05] text-white">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[8rem] font-black tracking-tight mb-8 leading-[1.1] text-white">
             The Dealership, <br/>
             <RotatingText
               texts={['Reinvented', 'Mobilized', 'Perfected']}
-              mainClassName="text-white inline-block px-4 bg-[#2563EB]/30 backdrop-blur-sm rounded-3xl"
+              mainClassName="text-white inline-block px-3 md:px-4 bg-[#2563EB]/30 backdrop-blur-sm rounded-3xl"
               staggerFrom="last"
               initial={{ y: "100%", opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
