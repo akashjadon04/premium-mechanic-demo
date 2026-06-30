@@ -1,6 +1,30 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef, useState } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import LottieLoader from '../components/LottieLoader';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, delay: i * 0.12, ease: 'easeOut' },
+  }),
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2
+    }
+  }
+};
+
+const cardVariant = {
+  hidden: { opacity: 0, y: 50, rotateX: -20, z: -50 },
+  visible: { opacity: 1, y: 0, rotateX: 0, z: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
+};
 
 export default function About() {
   const containerRef = useRef(null);
@@ -17,6 +41,22 @@ export default function About() {
   const { scrollYProgress: imageScroll } = useScroll();
   const imageScale = useTransform(imageScroll, [0, 1], [1, 1.3]);
   const imageY = useTransform(imageScroll, [0, 1], ["0%", "15%"]);
+
+  // Moved states from Contact.jsx
+  const [zipInput, setZipInput] = useState('');
+  const [zipResult, setZipResult] = useState(null);
+
+  const handleZipCheck = (e) => {
+    e.preventDefault();
+    const clean = zipInput.trim();
+    if (clean.length === 5 && (clean.startsWith('9') || clean.startsWith('1') || clean.startsWith('3'))) {
+      setZipResult('active');
+    } else {
+      setZipResult('inactive');
+    }
+  };
+
+  const inputClass = 'clay-input border-2 border-white/50 bg-white shadow-[inset_5px_5px_10px_#e6e6e6,inset_-5px_-5px_10px_#ffffff] focus:shadow-[inset_2px_2px_5px_#e6e6e6,inset_-2px_-2px_5px_#ffffff] transition-all';
 
   return (
     <div ref={containerRef} className="bg-clay-base text-clay-dark min-h-screen font-sans antialiased selection:bg-clay-accent selection:text-white relative overflow-hidden">
@@ -142,7 +182,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* 4. Equipment & Fleet (Unchanged but with vibrant colors) */}
+      {/* 4. Equipment & Fleet */}
       <section className="py-32 px-6 z-10 relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
@@ -201,7 +241,6 @@ export default function About() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {/* Team 1 */}
             <motion.div whileHover={{ scale: 1.02 }} className="clay-panel p-6">
               <img 
                 src="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=600" 
@@ -216,7 +255,6 @@ export default function About() {
               <p className="text-clay-muted font-inter leading-relaxed">Specializes in complex PDK transmission repair, CAN-Bus electronics mapping, and European engine diagnostics.</p>
             </motion.div>
 
-            {/* Team 2 */}
             <motion.div whileHover={{ scale: 1.02 }} className="clay-panel p-6">
               <img 
                 src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=600" 
@@ -231,7 +269,6 @@ export default function About() {
               <p className="text-clay-muted font-inter leading-relaxed">Expert in luxury EV platforms including Tesla, Audi e-tron, Porsche Taycan high-voltage batteries, and electric cooling modules.</p>
             </motion.div>
 
-            {/* Team 3 */}
             <motion.div whileHover={{ scale: 1.02 }} className="clay-panel p-6">
               <img 
                 src="https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&q=80&w=600" 
@@ -311,7 +348,247 @@ export default function About() {
         </div>
       </section>
 
+      {/* ─────────────────────────────────────
+          MOVED FROM CONTACT.JSX
+      ───────────────────────────────────── */}
+
+      {/* COVERAGE MAP / ZIP CHECKER */}
+      <section className="py-32 px-6 relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, type: "spring" }}
+          >
+            <div className="clay-panel bg-white border border-blue-100 inline-block px-5 py-2.5 rounded-full mb-8 shadow-sm">
+              <span className="text-blue-600 font-black uppercase tracking-widest text-xs font-inter">Coverage Radius</span>
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-black text-clay-dark uppercase tracking-tight mb-6">
+              Service Coverage <span className="text-gradient-accent">Regions</span>
+            </h2>
+            <p className="text-clay-muted text-lg leading-relaxed mb-10 font-inter font-medium">
+              We operate mobile workshop laboratory vans within a 35-mile radius of Metro HQ, ensuring rapid diagnostic response times.
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+              {['Downtown Core', 'Western Tech Bay', 'Northside Hills', 'Southshore Suburbs'].map((zone) => (
+                <div key={zone} className="clay-panel bg-white border-2 border-white/50 p-4 rounded-2xl flex items-center gap-3 transform hover:scale-105 transition-transform shadow-sm">
+                  <div className="w-4 h-4 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)] flex-shrink-0" />
+                  <span className="font-black text-clay-dark text-sm font-inter uppercase">{zone}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 50, rotateY: 20 }}
+            whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, type: "spring" }}
+            className="perspective-[1000px]"
+          >
+            <div className="clay-panel p-10 bg-gradient-to-br from-white to-gray-50 border-[4px] border-white shadow-[20px_20px_40px_#d1d9e6,_-20px_-20px_40px_#ffffff] rounded-[3rem] transform-gpu">
+              <h4 className="text-2xl font-black text-clay-dark uppercase tracking-tight mb-2">ZIP Code Checker</h4>
+              <p className="text-clay-muted text-sm mb-8 font-inter font-medium">
+                Enter your 5-digit postal code to check if our sprinter labs are active in your area.
+              </p>
+              <form onSubmit={handleZipCheck} className="flex gap-4">
+                <input
+                  type="text"
+                  value={zipInput}
+                  onChange={(e) => setZipInput(e.target.value)}
+                  placeholder="e.g. 90210"
+                  maxLength={5}
+                  className={inputClass}
+                  style={{ flexGrow: 1 }}
+                  required
+                />
+                <button type="submit" className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-black px-8 py-4 rounded-xl shadow-lg transition-colors uppercase text-sm">
+                  Verify
+                </button>
+              </form>
+
+              <AnimatePresence mode="wait">
+                {zipResult === 'active' && (
+                  <motion.div
+                    key="active"
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="mt-6 bg-green-50 border-2 border-green-200 p-4 rounded-2xl flex items-center gap-4 shadow-inner"
+                  >
+                    <span className="w-4 h-4 bg-green-500 rounded-full animate-ping flex-shrink-0" />
+                    <span className="text-sm font-black text-green-700 font-inter uppercase tracking-wider">
+                      Service Available · Rapid Dispatch Active
+                    </span>
+                  </motion.div>
+                )}
+                {zipResult === 'inactive' && (
+                  <motion.div
+                    key="inactive"
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="mt-6 bg-orange-50 border-2 border-orange-200 p-4 rounded-2xl flex items-center gap-4 shadow-inner"
+                  >
+                    <span className="w-4 h-4 bg-orange-500 rounded-full flex-shrink-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]" />
+                    <span className="text-sm font-black text-orange-700 font-inter uppercase tracking-wider">
+                      Outside Standard Radius · Inquire for Special Quote
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* BUSINESS OFFICES */}
+      <section className="py-32 bg-white/40 border-y border-clay-border px-6 relative z-10 perspective-[2000px]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl lg:text-6xl font-black text-clay-dark uppercase tracking-tight mb-6">
+              Business <span className="text-gradient-accent">Offices</span>
+            </h2>
+            <p className="text-clay-muted text-xl max-w-xl mx-auto font-inter">
+              Connect with our administrative departments for invoicing or scheduling changes.
+            </p>
+          </div>
+
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-10"
+          >
+            {[
+              { title: 'Metro HQ', detail: '4500 Wilshire Blvd\nLos Angeles, CA 90210', icon: '📍', color: 'bg-blue-50 text-blue-600 border-blue-200' },
+              { title: 'Support Desk', detail: 'support@yourmechanic.com\n(800) 555-0199', icon: '📞', color: 'bg-orange-50 text-orange-500 border-orange-200' },
+              { title: 'Fleet Proposals', detail: 'fleets@yourmechanic.com\n(800) 555-0188', icon: '🚛', color: 'bg-green-50 text-green-600 border-green-200' },
+            ].map((office, i) => (
+              <motion.div
+                key={office.title}
+                variants={cardVariant}
+                whileHover={{ scale: 1.05, rotateY: 5 }}
+                className="clay-panel bg-white border-2 border-white/50 p-10 transform-gpu shadow-[15px_15px_30px_#d1d9e6,_-15px_-15px_30px_#ffffff]"
+              >
+                <div className={`w-20 h-20 shadow-inner border-2 rounded-full flex items-center justify-center text-4xl mb-8 ${office.color}`}>
+                  {office.icon}
+                </div>
+                <h4 className="font-black text-clay-dark uppercase tracking-tight text-2xl mb-4">{office.title}</h4>
+                <p className="text-clay-muted font-inter leading-relaxed whitespace-pre-line font-medium text-lg">{office.detail}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* WORKSHOP GALLERY / SOCIAL FEED */}
+      <section className="py-32 px-6 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h3 className="text-5xl lg:text-6xl font-black text-clay-dark uppercase tracking-tight mb-6">
+              Workshop <span className="text-gradient-accent">Broadcasts</span>
+            </h3>
+            <p className="text-clay-muted text-xl max-w-xl mx-auto font-inter">
+              Follow our daily mechanics diagnostic cases and exotic vehicle tune-ups.
+            </p>
+          </div>
+
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-6"
+          >
+            {[
+              { src: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=1200', alt: 'Luxury Porsche 911 Detail' },
+              { src: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&q=80&w=1200', alt: 'Black Mercedes Reflection' },
+              { src: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&q=80&w=1200', alt: 'Diagnostics Screen' },
+              { src: 'https://images.unsplash.com/photo-1506015391300-4802dc74de2e?auto=format&fit=crop&q=80&w=1200', alt: 'Brake Calipers Assembly' },
+            ].map((img, i) => (
+              <motion.div
+                key={i}
+                variants={fadeUp}
+                whileHover={{ scale: 1.05, rotate: i % 2 === 0 ? 2 : -2 }}
+                className="clay-panel p-2 rounded-[2rem] aspect-square overflow-hidden bg-white shadow-lg border-2 border-white/50 cursor-pointer"
+              >
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  className="w-full h-full object-cover rounded-[1.6rem] transition-transform duration-700 hover:scale-110"
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CORPORATE INQUIRY FORM */}
+      <section className="py-32 bg-white/40 border-t border-clay-border px-6 relative z-10">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="bg-orange-100 border border-orange-200 inline-block px-5 py-2.5 rounded-full mb-8 shadow-sm">
+              <span className="text-orange-600 font-black uppercase tracking-widest text-xs font-inter">Corporate</span>
+            </div>
+            <h2 className="text-5xl font-black text-clay-dark uppercase tracking-tight mb-4">
+              Fleet & Vendor <span className="text-gradient-orange">Inquiries</span>
+            </h2>
+            <p className="text-clay-muted text-lg max-w-xl mx-auto font-inter">
+              Tell us about your fleet and we'll build a custom maintenance subscription tailored to your needs.
+            </p>
+          </div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="clay-panel bg-white p-10 lg:p-16 border-[4px] border-white shadow-[20px_20px_40px_#d1d9e6,_-20px_-20px_40px_#ffffff] rounded-[3rem]"
+          >
+            <form
+              onSubmit={(e) => { e.preventDefault(); alert('Fleet inquiry logged. We will contact you within 24 hours.'); }}
+              className="space-y-8"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Company Name</label>
+                  <input type="text" placeholder="e.g. Gotham Transport" className={inputClass} required />
+                </div>
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Estimated Fleet Size</label>
+                  <input type="number" placeholder="e.g. 12" className={inputClass} required />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Contact Name</label>
+                  <input type="text" placeholder="e.g. James Gordon" className={inputClass} required />
+                </div>
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Business Email</label>
+                  <input type="email" placeholder="james@gothamtransport.com" className={inputClass} required />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Message Description</label>
+                <textarea
+                  rows={5}
+                  placeholder="Outline your fleet logistics and scheduling requirements..."
+                  className={`${inputClass} resize-none w-full`}
+                  required
+                />
+              </div>
+              <button type="submit" className="inline-block w-full bg-blue-600 hover:bg-blue-500 text-white font-black px-10 py-6 rounded-2xl shadow-xl transition-all uppercase text-base transform hover:-translate-y-1">
+                Submit Corporate Proposal
+              </button>
+            </form>
+          </motion.div>
+        </div>
+      </section>
+
     </div>
   );
 }
-

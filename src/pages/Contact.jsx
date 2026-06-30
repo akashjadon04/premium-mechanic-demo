@@ -1,634 +1,143 @@
-import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import LottieLoader from '../components/LottieLoader';
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, delay: i * 0.12, ease: 'easeOut' },
-  }),
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2
-    }
-  }
-};
-
-const cardVariant = {
-  hidden: { opacity: 0, y: 50, rotateX: -20, z: -50 },
-  visible: { opacity: 1, y: 0, rotateX: 0, z: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
-};
-
-const STEPS = [
-  { id: 1, label: 'Vehicle' },
-  { id: 2, label: 'Location' },
-  { id: 3, label: 'Schedule' },
-  { id: 4, label: 'Contact' },
-];
-
 export default function Contact() {
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    year: '', make: '', model: '',
-    address: '', zip: '',
-    date: '', time: '',
-    name: '', phone: '', email: '',
-  });
-  const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [formData, setFormData] = useState({ name: '', phone: '', vehicle: '', issue: '' });
+  const [submitted, setSubmitted] = useState(false);
 
-  const [zipInput, setZipInput] = useState('');
-  const [zipResult, setZipResult] = useState(null);
-  
-  const containerRef = useRef(null);
-  
-  // Scrolling Map Pin
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-  const pinY = useTransform(scrollYProgress, [0, 1], ["0vh", "350vh"]);
-  const pinRotate = useTransform(scrollYProgress, [0, 1], [-15, 15]);
-
-  // Hero Parallax
-  const { scrollYProgress: heroScroll } = useScroll();
-  const heroY = useTransform(heroScroll, [0, 1], ["0%", "50%"]);
-  const heroOpacity = useTransform(heroScroll, [0, 0.5], [1, 0]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleNextStep = () => { if (step < 4) setStep(step + 1); };
-  const handlePrevStep = () => { if (step > 1) setStep(step - 1); };
-
-  const handleBookingSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setBookingSuccess(true);
+    setSubmitted(true);
   };
 
-  const handleZipCheck = (e) => {
-    e.preventDefault();
-    const clean = zipInput.trim();
-    if (clean.length === 5 && (clean.startsWith('9') || clean.startsWith('1') || clean.startsWith('3'))) {
-      setZipResult('active');
-    } else {
-      setZipResult('inactive');
-    }
-  };
-
-  const inputClass = 'clay-input border-2 border-white/50 bg-white shadow-[inset_5px_5px_10px_#e6e6e6,inset_-5px_-5px_10px_#ffffff] focus:shadow-[inset_2px_2px_5px_#e6e6e6,inset_-2px_-2px_5px_#ffffff] transition-all';
+  const inputClass = "w-full bg-white/60 backdrop-blur-md border-2 border-white/80 rounded-2xl px-6 py-4 text-clay-dark font-medium shadow-[inset_2px_2px_10px_rgba(0,0,0,0.05),inset_-2px_-2px_10px_rgba(255,255,255,1)] focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all font-inter placeholder:text-clay-muted/70";
 
   return (
-    <div ref={containerRef} className="bg-clay-base text-clay-dark min-h-screen font-sans antialiased selection:bg-blue-500 selection:text-white relative overflow-hidden">
+    <div className="bg-clay-base text-clay-dark min-h-screen font-sans antialiased relative overflow-hidden flex justify-center py-24 px-4 md:px-6">
+      
+      {/* Background Orbs */}
+      <div className="fixed top-0 left-1/4 w-96 h-96 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-[100px] animate-blob pointer-events-none" />
+      <div className="fixed top-1/4 right-1/4 w-96 h-96 bg-purple-400/20 rounded-full mix-blend-multiply filter blur-[100px] animate-blob animation-delay-2000 pointer-events-none" />
+      <div className="fixed bottom-0 left-1/3 w-96 h-96 bg-orange-400/20 rounded-full mix-blend-multiply filter blur-[100px] animate-blob animation-delay-4000 pointer-events-none" />
 
-      {/* Floating Map Pin */}
-      <motion.div 
-        style={{ top: pinY, rotate: pinRotate }}
-        className="absolute right-[8%] z-50 pointer-events-none hidden xl:flex flex-col items-center justify-center w-24 h-24"
-      >
-        <div className="w-16 h-16 bg-red-500 rounded-full shadow-[0_20px_40px_rgba(239,68,68,0.5)] flex items-center justify-center border-4 border-white mb-2 relative">
-          <svg className="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          <div className="absolute inset-0 bg-red-400 rounded-full animate-ping opacity-50 z-0" />
-        </div>
-        <div className="w-4 h-4 bg-red-600/30 rounded-full blur-[2px]" />
-      </motion.div>
-
-      {/* ─────────────────────────────────────
-          1. HERO
-      ───────────────────────────────────── */}
-      <section className="h-[65vh] flex flex-col items-center justify-center text-center px-6 relative z-10 overflow-hidden shadow-2xl mb-20">
+      {/* Main Container */}
+      <div className="w-full max-w-md relative z-10 space-y-8 mt-10">
+        
+        {/* Profile Header */}
         <motion.div 
-          style={{ y: heroY, opacity: heroOpacity }}
-          className="absolute inset-0 z-0"
-        >
-          <img 
-            src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2500" 
-            alt="Corporate Office" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-4xl mx-auto relative z-10"
+          className="text-center"
         >
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-full mb-10 border border-white/20 shadow-xl">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-400 animate-ping" />
-            <span className="text-xs font-bold uppercase tracking-widest text-blue-100 font-inter">
-              Active Support Channels
-            </span>
+          <div className="relative inline-block mb-4">
+            <div className="w-28 h-28 mx-auto rounded-full bg-gradient-to-br from-gray-900 to-black p-1 shadow-[10px_10px_20px_#d1d9e6,_-10px_-10px_20px_#ffffff]">
+              <div className="w-full h-full rounded-full border-4 border-white overflow-hidden bg-black flex items-center justify-center">
+                <span className="font-black text-3xl tracking-widest text-white uppercase">YM<span className="text-blue-500">.</span></span>
+              </div>
+            </div>
+            {/* Verify Badge */}
+            <div className="absolute bottom-0 right-0 w-8 h-8 bg-blue-500 rounded-full border-4 border-white flex items-center justify-center shadow-lg">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/></svg>
+            </div>
           </div>
-          <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-white uppercase tracking-tight mb-8 leading-[1] drop-shadow-2xl">
-            Connect With <br />
-            <span className="text-blue-500 drop-shadow-lg">The Workshop</span>
-          </h1>
-          <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed font-inter mb-10 font-medium">
-            Schedule an appointment, verify local coverage coordinates, or connect directly with our emergency dispatch desk.
+          <h1 className="text-3xl font-black text-clay-dark uppercase tracking-tight">Your Mechanic</h1>
+          <p className="text-blue-600 font-bold uppercase tracking-widest text-xs mt-1 mb-4 font-inter">Premium Mobile Concierge</p>
+          <p className="text-clay-muted font-inter font-medium leading-relaxed px-4">
+            Direct dispatch for luxury automotive diagnostics, maintenance, and emergency roadside assistance.
           </p>
         </motion.div>
-      </section>
 
-      {/* ─────────────────────────────────────
-          2. BOOKING FORM
-      ───────────────────────────────────── */}
-      <section className="py-20 px-6 relative z-10">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="w-20 h-20 mx-auto bg-white shadow-[10px_10px_20px_#d1d9e6,_-10px_-10px_20px_#ffffff] rounded-full flex items-center justify-center mb-6 border-2 border-white">
-              <LottieLoader data-lottie-url="scheduler" animationUrl="https://lottie.host/29e160be-090c-4ec7-b89a-4c28f3258836/calendar.json" className="w-10 h-10" />
+        {/* Quick Links */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="space-y-4"
+        >
+          <a href="tel:1-800-555-0199" className="flex items-center gap-4 w-full bg-white border border-white/50 p-4 rounded-[2rem] shadow-[10px_10px_20px_#d1d9e6,_-10px_-10px_20px_#ffffff] transform hover:scale-[1.02] transition-transform group">
+            <div className="w-14 h-14 rounded-full bg-red-50 text-red-500 flex items-center justify-center shadow-inner group-hover:bg-red-500 group-hover:text-white transition-colors">
+              <svg className="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
             </div>
-            <h2 className="text-5xl font-black text-clay-dark uppercase tracking-tight mb-4">
-              Book an <span className="text-gradient-accent">Appointment</span>
-            </h2>
-            <p className="text-clay-muted text-lg font-inter">
-              Complete the intake fields below to request a concierge diagnostic callout.
-            </p>
+            <div className="text-left">
+              <h3 className="font-black text-clay-dark uppercase tracking-tight">24/7 Emergency Dispatch</h3>
+              <p className="text-xs text-clay-muted font-inter font-bold uppercase tracking-widest">Call (800) 555-0199</p>
+            </div>
+          </a>
+
+          <a href="https://instagram.com" target="_blank" rel="noreferrer" className="flex items-center gap-4 w-full bg-white border border-white/50 p-4 rounded-[2rem] shadow-[10px_10px_20px_#d1d9e6,_-10px_-10px_20px_#ffffff] transform hover:scale-[1.02] transition-transform group">
+            <div className="w-14 h-14 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shadow-inner group-hover:bg-gradient-to-tr group-hover:from-yellow-400 group-hover:via-pink-500 group-hover:to-purple-600 group-hover:text-white transition-all">
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </div>
+            <div className="text-left">
+              <h3 className="font-black text-clay-dark uppercase tracking-tight">Follow Workshop</h3>
+              <p className="text-xs text-clay-muted font-inter font-bold uppercase tracking-widest">@yourmechanic</p>
+            </div>
+          </a>
+        </motion.div>
+
+        {/* Concierge Form */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="clay-panel p-8 bg-white/40 border-[3px] border-white/60 shadow-[20px_20px_40px_rgba(209,217,230,0.5),-20px_-20px_40px_rgba(255,255,255,0.8)] rounded-[3rem]"
+        >
+          <div className="flex items-center gap-3 mb-8 justify-center">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
+            <h2 className="text-xl font-black text-clay-dark uppercase tracking-widest text-center">Intake Portal</h2>
           </div>
 
-          <div className="clay-panel p-10 lg:p-16 border-[4px] border-white shadow-[30px_30px_60px_#d1d9e6,_-30px_-30px_60px_#ffffff] rounded-[3rem] bg-gradient-to-br from-white to-blue-50/30">
-            {bookingSuccess ? (
-              <motion.div
+          <AnimatePresence mode="wait">
+            {submitted ? (
+              <motion.div 
+                key="success"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-16"
+                className="text-center py-10"
               >
-                <div className="w-24 h-24 mx-auto bg-green-50 shadow-inner border-2 border-green-200 rounded-full flex items-center justify-center mb-8">
+                <div className="w-24 h-24 mx-auto bg-green-50 shadow-inner border-2 border-green-200 rounded-full flex items-center justify-center mb-6">
                   <LottieLoader data-lottie-url="success" animationUrl="https://lottie.host/b00d6efc-974a-4e2a-8742-df21f7c16cd6/success.json" className="w-12 h-12" />
                 </div>
-                <h4 className="text-3xl font-black text-clay-dark uppercase tracking-tight mb-4">
-                  Request Successfully Logged
-                </h4>
-                <p className="text-clay-muted text-lg max-w-md mx-auto font-inter leading-relaxed font-medium">
-                  Your appointment reservation has been submitted. A service manager will contact you in approximately 10 minutes to verify details.
+                <h3 className="text-2xl font-black text-clay-dark uppercase tracking-tight mb-2">Request Sent</h3>
+                <p className="text-clay-muted font-inter font-medium leading-relaxed">
+                  An advisor will text you shortly to coordinate your specialized service.
                 </p>
               </motion.div>
             ) : (
-              <form onSubmit={handleBookingSubmit}>
-                {/* Step Indicators */}
-                <div className="flex justify-between items-center mb-16 relative">
-                  <div className="absolute top-6 left-0 right-0 h-[4px] bg-blue-100 shadow-inner z-0 mx-12 rounded-full" />
-                  {STEPS.map((s) => (
-                    <div key={s.id} className="flex flex-col items-center gap-3 z-10">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black shadow-lg transition-colors border-2 ${
-                        step > s.id 
-                          ? 'bg-blue-500 text-white border-blue-500' 
-                          : step === s.id 
-                            ? 'bg-white text-blue-600 border-blue-600 ring-4 ring-blue-100' 
-                            : 'bg-white text-gray-400 border-gray-200 shadow-inner'
-                      }`}>
-                        {step > s.id ? (
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                          </svg>
-                        ) : s.id}
-                      </div>
-                      <span className={`text-xs font-black uppercase tracking-wider font-inter ${step >= s.id ? 'text-blue-600' : 'text-gray-400'}`}>
-                        {s.label}
-                      </span>
-                    </div>
-                  ))}
+              <motion.form 
+                key="form"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onSubmit={handleSubmit}
+                className="space-y-5"
+              >
+                <div>
+                  <input type="text" placeholder="Full Name" className={inputClass} value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required />
                 </div>
-
-                {/* Step 1: Vehicle */}
-                <AnimatePresence mode="wait">
-                  {step === 1 && (
-                    <motion.div
-                      key="step1"
-                      initial={{ opacity: 0, x: 30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -30 }}
-                      transition={{ duration: 0.35 }}
-                      className="space-y-6"
-                    >
-                      <h5 className="text-xl font-black text-clay-dark uppercase tracking-tight mb-6 flex items-center gap-3">
-                        <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">1</span> 
-                        Vehicle Specifications
-                      </h5>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Model Year</label>
-                          <input type="text" name="year" value={formData.year} onChange={handleInputChange} placeholder="e.g. 2023" className={inputClass} required />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Make</label>
-                          <input type="text" name="make" value={formData.make} onChange={handleInputChange} placeholder="e.g. Porsche" className={inputClass} required />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Model</label>
-                          <input type="text" name="model" value={formData.model} onChange={handleInputChange} placeholder="e.g. 911 Carrera S" className={inputClass} required />
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* Step 2: Location */}
-                  {step === 2 && (
-                    <motion.div
-                      key="step2"
-                      initial={{ opacity: 0, x: 30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -30 }}
-                      transition={{ duration: 0.35 }}
-                      className="space-y-6"
-                    >
-                      <h5 className="text-xl font-black text-clay-dark uppercase tracking-tight mb-6 flex items-center gap-3">
-                        <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">2</span>
-                        Service Location
-                      </h5>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div className="md:col-span-3">
-                          <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Street Address</label>
-                          <input type="text" name="address" value={formData.address} onChange={handleInputChange} placeholder="e.g. 4500 Wilshire Blvd" className={inputClass} required />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">ZIP Code</label>
-                          <input type="text" name="zip" value={formData.zip} onChange={handleInputChange} placeholder="90210" className={inputClass} required />
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* Step 3: Schedule */}
-                  {step === 3 && (
-                    <motion.div
-                      key="step3"
-                      initial={{ opacity: 0, x: 30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -30 }}
-                      transition={{ duration: 0.35 }}
-                      className="space-y-6"
-                    >
-                      <h5 className="text-xl font-black text-clay-dark uppercase tracking-tight mb-6 flex items-center gap-3">
-                        <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">3</span>
-                        Schedule Preference
-                      </h5>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Preferred Date</label>
-                          <input type="date" name="date" value={formData.date} onChange={handleInputChange} className={inputClass} required />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Time Window</label>
-                          <select name="time" value={formData.time} onChange={handleInputChange} className={inputClass} required>
-                            <option value="">Select Time Window</option>
-                            <option value="morning">Morning (8:00 AM – 12:00 PM)</option>
-                            <option value="afternoon">Afternoon (12:00 PM – 4:00 PM)</option>
-                            <option value="evening">Late Afternoon (4:00 PM – 7:00 PM)</option>
-                          </select>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* Step 4: Contact */}
-                  {step === 4 && (
-                    <motion.div
-                      key="step4"
-                      initial={{ opacity: 0, x: 30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -30 }}
-                      transition={{ duration: 0.35 }}
-                      className="space-y-6"
-                    >
-                      <h5 className="text-xl font-black text-clay-dark uppercase tracking-tight mb-6 flex items-center gap-3">
-                        <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">4</span>
-                        Contact Details
-                      </h5>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Full Name</label>
-                          <input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="e.g. Richard Hammond" className={inputClass} required />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Phone Number</label>
-                          <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="(310) 555-0122" className={inputClass} required />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Email Address</label>
-                          <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="richard@topgear.com" className={inputClass} required />
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Nav Buttons */}
-                <div className="flex justify-between items-center pt-10 mt-10 border-t border-blue-100">
-                  {step > 1 ? (
-                    <button type="button" onClick={handlePrevStep} className="inline-block bg-white text-gray-500 hover:text-blue-600 hover:bg-blue-50 font-black px-8 py-4 rounded-full transition-colors uppercase text-sm border-2 border-gray-200">
-                      ← Back
-                    </button>
-                  ) : <div />}
-
-                  {step < 4 ? (
-                    <button type="button" onClick={handleNextStep} className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-black px-10 py-4 rounded-full shadow-[0_10px_20px_rgba(37,99,235,0.3)] transition-all uppercase text-sm transform hover:-translate-y-1">
-                      Next Step →
-                    </button>
-                  ) : (
-                    <button type="submit" className="inline-block bg-green-500 hover:bg-green-400 text-white font-black px-12 py-4 rounded-full shadow-[0_10px_20px_rgba(34,197,94,0.3)] transition-all uppercase text-sm transform hover:-translate-y-1">
-                      Submit Booking
-                    </button>
-                  )}
+                <div>
+                  <input type="tel" placeholder="Mobile Number" className={inputClass} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} required />
                 </div>
-              </form>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────
-          3. EMERGENCY DISPATCH
-      ───────────────────────────────────── */}
-      <section className="py-28 bg-gradient-to-r from-orange-50 via-white to-orange-50 border-y border-clay-border px-6 relative z-10 overflow-hidden">
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 30 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, type: "spring", bounce: 0.5 }}
-          >
-            <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 px-5 py-2.5 rounded-full mb-10 shadow-inner">
-              <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping" />
-              <span className="text-xs font-black uppercase tracking-widest text-orange-600 font-inter">
-                24/7 Roadside Assistance
-              </span>
-            </div>
-            <h2 className="text-5xl lg:text-6xl font-black text-clay-dark uppercase tracking-tight mb-6 drop-shadow-sm">
-              Roadside Breakdown <span className="text-orange-500">Hotline</span>
-            </h2>
-            <p className="text-clay-muted text-xl mb-12 max-w-xl mx-auto font-inter leading-relaxed font-medium">
-              Urgent diagnostic stabilization or tow redirection. Connect immediately with our active dispatcher.
-            </p>
-            <a
-              href="tel:1-800-555-0199"
-              className="inline-flex items-center gap-3 bg-orange-500 hover:bg-orange-400 text-white font-black text-xl px-12 py-6 rounded-full shadow-[0_15px_40px_rgba(249,115,22,0.4)] transition-all transform hover:-translate-y-2 uppercase"
-            >
-              <svg className="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-              Call: (800) 555-0199
-            </a>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────
-          4. COVERAGE MAP / ZIP CHECKER
-      ───────────────────────────────────── */}
-      <section className="py-32 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, type: "spring" }}
-          >
-            <div className="clay-panel bg-white border border-blue-100 inline-block px-5 py-2.5 rounded-full mb-8 shadow-sm">
-              <span className="text-blue-600 font-black uppercase tracking-widest text-xs font-inter">Coverage Radius</span>
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-black text-clay-dark uppercase tracking-tight mb-6">
-              Service Coverage <span className="text-gradient-accent">Regions</span>
-            </h2>
-            <p className="text-clay-muted text-lg leading-relaxed mb-10 font-inter font-medium">
-              We operate mobile workshop laboratory vans within a 35-mile radius of Metro HQ, ensuring rapid diagnostic response times.
-            </p>
-            <div className="grid grid-cols-2 gap-4">
-              {['Downtown Core', 'Western Tech Bay', 'Northside Hills', 'Southshore Suburbs'].map((zone) => (
-                <div key={zone} className="clay-panel bg-white border-2 border-white/50 p-4 rounded-2xl flex items-center gap-3 transform hover:scale-105 transition-transform shadow-sm">
-                  <div className="w-4 h-4 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)] flex-shrink-0" />
-                  <span className="font-black text-clay-dark text-sm font-inter uppercase">{zone}</span>
+                <div>
+                  <input type="text" placeholder="Vehicle (e.g. 2023 Porsche 911)" className={inputClass} value={formData.vehicle} onChange={e => setFormData({...formData, vehicle: e.target.value})} required />
                 </div>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 50, rotateY: 20 }}
-            whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, type: "spring" }}
-            className="perspective-[1000px]"
-          >
-            <div className="clay-panel p-10 bg-gradient-to-br from-white to-gray-50 border-[4px] border-white shadow-[20px_20px_40px_#d1d9e6,_-20px_-20px_40px_#ffffff] rounded-[3rem] transform-gpu">
-              <h4 className="text-2xl font-black text-clay-dark uppercase tracking-tight mb-2">ZIP Code Checker</h4>
-              <p className="text-clay-muted text-sm mb-8 font-inter font-medium">
-                Enter your 5-digit postal code to check if our sprinter labs are active in your area.
-              </p>
-              <form onSubmit={handleZipCheck} className="flex gap-4">
-                <input
-                  type="text"
-                  value={zipInput}
-                  onChange={(e) => setZipInput(e.target.value)}
-                  placeholder="e.g. 90210"
-                  maxLength={5}
-                  className={inputClass}
-                  style={{ flexGrow: 1 }}
-                  required
-                />
-                <button type="submit" className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-black px-8 py-4 rounded-xl shadow-lg transition-colors uppercase text-sm">
-                  Verify
+                <div>
+                  <textarea rows={3} placeholder="Briefly describe the issue or service needed..." className={`${inputClass} resize-none`} value={formData.issue} onChange={e => setFormData({...formData, issue: e.target.value})} required />
+                </div>
+                <button type="submit" className="w-full bg-clay-dark text-white font-black py-5 rounded-2xl shadow-[0_15px_30px_rgba(15,23,42,0.3)] transition-all uppercase tracking-widest text-sm transform hover:-translate-y-1 hover:bg-black">
+                  Request Concierge
                 </button>
-              </form>
+              </motion.form>
+            )}
+          </AnimatePresence>
+        </motion.div>
 
-              <AnimatePresence mode="wait">
-                {zipResult === 'active' && (
-                  <motion.div
-                    key="active"
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="mt-6 bg-green-50 border-2 border-green-200 p-4 rounded-2xl flex items-center gap-4 shadow-inner"
-                  >
-                    <span className="w-4 h-4 bg-green-500 rounded-full animate-ping flex-shrink-0" />
-                    <span className="text-sm font-black text-green-700 font-inter uppercase tracking-wider">
-                      Service Available · Rapid Dispatch Active
-                    </span>
-                  </motion.div>
-                )}
-                {zipResult === 'inactive' && (
-                  <motion.div
-                    key="inactive"
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="mt-6 bg-orange-50 border-2 border-orange-200 p-4 rounded-2xl flex items-center gap-4 shadow-inner"
-                  >
-                    <span className="w-4 h-4 bg-orange-500 rounded-full flex-shrink-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]" />
-                    <span className="text-sm font-black text-orange-700 font-inter uppercase tracking-wider">
-                      Outside Standard Radius · Inquire for Special Quote
-                    </span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+        <p className="text-center text-[10px] uppercase font-black tracking-widest text-clay-muted/50 pb-10">
+          © {new Date().getFullYear()} Premium Mechanics Inc.
+        </p>
 
-      {/* ─────────────────────────────────────
-          5. BUSINESS OFFICES
-      ───────────────────────────────────── */}
-      <section className="py-32 bg-white/40 border-y border-clay-border px-6 relative z-10 perspective-[2000px]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-5xl lg:text-6xl font-black text-clay-dark uppercase tracking-tight mb-6">
-              Business <span className="text-gradient-accent">Offices</span>
-            </h2>
-            <p className="text-clay-muted text-xl max-w-xl mx-auto font-inter">
-              Connect with our administrative departments for invoicing or scheduling changes.
-            </p>
-          </div>
-
-          <motion.div 
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-10"
-          >
-            {[
-              { title: 'Metro HQ', detail: '4500 Wilshire Blvd\nLos Angeles, CA 90210', icon: '📍', color: 'bg-blue-50 text-blue-600 border-blue-200' },
-              { title: 'Support Desk', detail: 'support@yourmechanic.com\n(800) 555-0199', icon: '📞', color: 'bg-orange-50 text-orange-500 border-orange-200' },
-              { title: 'Fleet Proposals', detail: 'fleets@yourmechanic.com\n(800) 555-0188', icon: '🚛', color: 'bg-green-50 text-green-600 border-green-200' },
-            ].map((office, i) => (
-              <motion.div
-                key={office.title}
-                variants={cardVariant}
-                whileHover={{ scale: 1.05, rotateY: 5 }}
-                className="clay-panel bg-white border-2 border-white/50 p-10 transform-gpu shadow-[15px_15px_30px_#d1d9e6,_-15px_-15px_30px_#ffffff]"
-              >
-                <div className={`w-20 h-20 shadow-inner border-2 rounded-full flex items-center justify-center text-4xl mb-8 ${office.color}`}>
-                  {office.icon}
-                </div>
-                <h4 className="font-black text-clay-dark uppercase tracking-tight text-2xl mb-4">{office.title}</h4>
-                <p className="text-clay-muted font-inter leading-relaxed whitespace-pre-line font-medium text-lg">{office.detail}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────
-          6. WORKSHOP GALLERY / SOCIAL FEED
-      ───────────────────────────────────── */}
-      <section className="py-32 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h3 className="text-5xl lg:text-6xl font-black text-clay-dark uppercase tracking-tight mb-6">
-              Workshop <span className="text-gradient-accent">Broadcasts</span>
-            </h3>
-            <p className="text-clay-muted text-xl max-w-xl mx-auto font-inter">
-              Follow our daily mechanics diagnostic cases and exotic vehicle tune-ups.
-            </p>
-          </div>
-
-          <motion.div 
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6"
-          >
-            {[
-              { src: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=1200', alt: 'Luxury Porsche 911 Detail' },
-              { src: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&q=80&w=1200', alt: 'Black Mercedes Reflection' },
-              { src: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&q=80&w=1200', alt: 'Diagnostics Screen' },
-              { src: 'https://images.unsplash.com/photo-1506015391300-4802dc74de2e?auto=format&fit=crop&q=80&w=1200', alt: 'Brake Calipers Assembly' },
-            ].map((img, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                whileHover={{ scale: 1.05, rotate: i % 2 === 0 ? 2 : -2 }}
-                className="clay-panel p-2 rounded-[2rem] aspect-square overflow-hidden bg-white shadow-lg border-2 border-white/50 cursor-pointer"
-              >
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  className="w-full h-full object-cover rounded-[1.6rem] transition-transform duration-700 hover:scale-110"
-                />
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────
-          7. CORPORATE INQUIRY FORM
-      ───────────────────────────────────── */}
-      <section className="py-32 bg-white/40 border-t border-clay-border px-6 relative z-10">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="bg-orange-100 border border-orange-200 inline-block px-5 py-2.5 rounded-full mb-8 shadow-sm">
-              <span className="text-orange-600 font-black uppercase tracking-widest text-xs font-inter">Corporate</span>
-            </div>
-            <h2 className="text-5xl font-black text-clay-dark uppercase tracking-tight mb-4">
-              Fleet & Vendor <span className="text-gradient-orange">Inquiries</span>
-            </h2>
-            <p className="text-clay-muted text-lg max-w-xl mx-auto font-inter">
-              Tell us about your fleet and we'll build a custom maintenance subscription tailored to your needs.
-            </p>
-          </div>
-
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="clay-panel bg-white p-10 lg:p-16 border-[4px] border-white shadow-[20px_20px_40px_#d1d9e6,_-20px_-20px_40px_#ffffff] rounded-[3rem]"
-          >
-            <form
-              onSubmit={(e) => { e.preventDefault(); alert('Fleet inquiry logged. We will contact you within 24 hours.'); }}
-              className="space-y-8"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Company Name</label>
-                  <input type="text" placeholder="e.g. Gotham Transport" className={inputClass} required />
-                </div>
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Estimated Fleet Size</label>
-                  <input type="number" placeholder="e.g. 12" className={inputClass} required />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Contact Name</label>
-                  <input type="text" placeholder="e.g. James Gordon" className={inputClass} required />
-                </div>
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Business Email</label>
-                  <input type="email" placeholder="james@gothamtransport.com" className={inputClass} required />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-black uppercase tracking-widest text-clay-muted mb-3 font-inter">Message Description</label>
-                <textarea
-                  rows={5}
-                  placeholder="Outline your fleet logistics and scheduling requirements..."
-                  className={`${inputClass} resize-none w-full`}
-                  required
-                />
-              </div>
-              <button type="submit" className="inline-block w-full bg-blue-600 hover:bg-blue-500 text-white font-black px-10 py-6 rounded-2xl shadow-xl transition-all uppercase text-base transform hover:-translate-y-1">
-                Submit Corporate Proposal
-              </button>
-            </form>
-          </motion.div>
-        </div>
-      </section>
-
+      </div>
     </div>
   );
 }
